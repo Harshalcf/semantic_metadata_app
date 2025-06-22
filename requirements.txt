@@ -1,0 +1,12 @@
+streamlit
+transformers
+sentence-transformers
+keybert
+spacy
+PyPDF2
+docx2txt
+pytesseract
+opencv-python
+datefinder
+pdfminer.six
+python-docx
