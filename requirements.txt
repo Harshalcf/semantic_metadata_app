@@ -2,7 +2,7 @@ streamlit
 transformers
 sentence-transformers
 keybert
-spacy
+spacy==3.8.0
 PyPDF2
 docx2txt
 pytesseract
