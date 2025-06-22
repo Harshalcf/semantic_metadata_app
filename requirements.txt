@@ -1,13 +1,13 @@
 streamlit
-transformers
+transformers==4.39.3
 torch
+sentence-transformers
 keybert
 pdfplumber
 pytesseract
 python-docx
-sentence-transformers
 docx2txt
 PyPDF2
-opencv-python
+Pillow
 datefinder
 pdfminer.six

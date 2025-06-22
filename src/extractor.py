@@ -1,7 +1,7 @@
 from PyPDF2 import PdfReader
 import docx2txt
 import pytesseract
-import cv2
+from PIL import Image
 from pathlib import Path
 
 def extract_text(path):
@@ -19,7 +19,7 @@ def extract_text(path):
             return f.read()
 
     elif file_ext in ['.jpg', '.jpeg', '.png']:
-        img = cv2.imread(path)
+        img = Image.open(path)
         return pytesseract.image_to_string(img)
 
     return ""
