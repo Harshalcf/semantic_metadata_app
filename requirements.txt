@@ -1,5 +1,5 @@
 streamlit
-transformers==4.39.3
+transformers==4.31.0
 torch
 sentence-transformers
 keybert
