@@ -1,18 +1,20 @@
-
 import streamlit as st
 import os
 import json
-
-# ===== Streamlit cache decorators for optimization =====
 from transformers import pipeline
 
+# ===== Hugging Face pipelines =====
 @st.cache_resource
 def load_summarizer():
-    return pipeline("summarization", model="facebook/bart-large-cnn", device=0)
+    return pipeline("summarization", model="facebook/bart-large-cnn")
 
 @st.cache_resource
 def load_classifier():
-    return pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=0)
+    return pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
+
+@st.cache_resource
+def load_ner():
+    return pipeline("ner", grouped_entities=True)
 
 # ===== Import functions from your modules =====
 from src.extractor import extract_text

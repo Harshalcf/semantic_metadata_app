@@ -1,7 +1,8 @@
 import re
-import spacy
+from transformers import pipeline
 
-nlp = spacy.load("en_core_web_sm")
+# Load Hugging Face NER pipeline
+ner = pipeline("ner", grouped_entities=True)
 
 def extract_title(text):
     lines = text.strip().split("\n")
@@ -20,9 +21,9 @@ def extract_author(text):
         if match:
             return match.group(2)
 
-    doc = nlp(text)
-    for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            return ent.text
+    results = ner(text)
+    for ent in results:
+        if ent.get("entity_group") == "PER":
+            return ent.get("word")
 
     return "Unknown Author"

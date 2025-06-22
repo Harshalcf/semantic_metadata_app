@@ -1,8 +1,9 @@
-
 from transformers import pipeline
 from collections import Counter
+import torch
 
-classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=0)
+device = 0 if torch.cuda.is_available() else -1
+classifier = pipeline("zero-shot-classification", model="facebook/bart-large-mnli", device=device)
 
 def detect_category_from_chunks(text, candidate_labels=None, max_chunk_size=1000):
     if candidate_labels is None:
