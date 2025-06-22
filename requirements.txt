@@ -1,5 +1,4 @@
 streamlit
-transformers==4.31.0
 torch
 sentence-transformers
 keybert
@@ -11,3 +10,5 @@ PyPDF2
 Pillow
 datefinder
 pdfminer.six
+tokenizers==0.13.2
+transformers==4.30.2

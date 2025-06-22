@@ -1,10 +1,7 @@
 from transformers import pipeline
-import torch
 
-# Use GPU if available, else CPU
-device = 0 if torch.cuda.is_available() else -1
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn", tokenizer="facebook/bart-large-cnn")
 
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn", device=device)
 
 def split_text_into_chunks(text, max_chunk_size=3000):
     text = text.replace('\n', ' ').strip()
