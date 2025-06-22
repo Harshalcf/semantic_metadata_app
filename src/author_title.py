@@ -2,7 +2,7 @@ import re
 from transformers import pipeline
 
 # Load Hugging Face NER pipeline
-ner = pipeline("ner", grouped_entities=True)
+ner = pipeline("ner", model="dslim/bert-base-NER", aggregation_strategy="simple")
 
 def extract_title(text):
     lines = text.strip().split("\n")
