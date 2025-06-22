@@ -1,21 +1,3 @@
-import spacy
-import importlib.util
-
-def ensure_spacy_model():
-    model_name = "en_core_web_sm"
-    if importlib.util.find_spec(model_name) is None:
-        spacy.cli.download(model_name)
-
-ensure_spacy_model()
-import spacy
-import importlib.util
-
-def ensure_spacy_model():
-    model_name = "en_core_web_sm"
-    if importlib.util.find_spec(model_name) is None:
-        spacy.cli.download(model_name)
-
-ensure_spacy_model()
 
 import streamlit as st
 import os
