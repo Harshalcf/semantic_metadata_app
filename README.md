@@ -48,6 +48,22 @@ conda activate meta-gen
 # Install requirements
 pip install -r requirements.txt
 
+# Set up API keys
+OCR_API_URL=https://api.ocr.space/parse/image
+OCR_API_KEY=your_ocr_api_key
+
+NER_API_URL=https://api-inference.huggingface.co/models/ner-model
+NER_API_KEY=your_huggingface_token
+
+SUMMARY_API_URL=https://api-inference.huggingface.co/models/summary-model
+SUMMARY_API_KEY=your_huggingface_token
+
+CLASSIFY_API_URL=https://api-inference.huggingface.co/models/classify-model
+CLASSIFY_API_KEY=your_huggingface_token
+
+# Run the App Locally:
+streamlit run app.py
+
 # What We Learned
 Using API-based NLP processing significantly reduces load on local and cloud resources, making the app faster and lighter.
 
