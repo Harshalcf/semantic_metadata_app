@@ -36,3 +36,14 @@ Author detection using Named Entity Recognition (NER) API.
 Supports JSON and PDF download of extracted metadata.
 
 Clean separation between local and cloud environment variables.
+
+## Clone the repo
+git clone https://github.com/Harshalcf/semantic_metadata_app.git
+cd semantic_metadata_app
+
+## Create a virtual environment
+conda create -n meta-gen python=3.10
+conda activate meta-gen
+
+## Install requirements
+pip install -r requirements.txt
