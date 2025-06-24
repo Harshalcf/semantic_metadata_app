@@ -84,7 +84,3 @@ if uploaded_file:
         file_name="metadata.pdf",
         mime="application/pdf"
     )
-
-    # Clear & Upload another file button
-    if st.button("Clear & Upload Another File"):
-        st.rerun()
