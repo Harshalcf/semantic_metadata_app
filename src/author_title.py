@@ -1,9 +1,18 @@
 import re
-from transformers import pipeline
+import os
+import requests
+from dotenv import load_dotenv
 
-# Load Hugging Face NER pipeline
-#ner = pipeline("ner", model="dslim/bert-base-NER", aggregation_strategy="simple")
-ner = pipeline("ner", model="dslim/bert-base-NER", tokenizer="dslim/bert-base-NER", aggregation_strategy="simple")
+load_dotenv()
+
+NER_API_URL = os.getenv("NER_API_URL")
+NER_API_KEY = os.getenv("NER_API_KEY")
+headers = {"Authorization": f"Bearer {NER_API_KEY}"}
+
+def call_ner_api(text):
+    payload = {"inputs": text}
+    response = requests.post(NER_API_URL, headers=headers, json=payload)
+    return response.json()
 
 def extract_title(text):
     lines = text.strip().split("\n")
@@ -22,9 +31,13 @@ def extract_author(text):
         if match:
             return match.group(2)
 
-    results = ner(text)
-    for ent in results:
-        if ent.get("entity_group") == "PER":
-            return ent.get("word")
+    results = call_ner_api(text)
+
+    try:
+        for ent in results[0]['entities']:
+            if ent.get("entity_group", ent.get("entity")) == "PER":  # API may return 'entity' or 'entity_group'
+                return ent.get("word")
+    except:
+        pass
 
     return "Unknown Author"

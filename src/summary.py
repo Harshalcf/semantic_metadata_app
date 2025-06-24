@@ -1,7 +1,12 @@
-from transformers import pipeline
+import os
+import requests
+from dotenv import load_dotenv
 
-summarizer = pipeline("summarization", model="facebook/bart-large-cnn", tokenizer="facebook/bart-large-cnn")
+load_dotenv()
 
+API_URL = os.getenv("SUMMARY_API_URL")
+API_KEY = os.getenv("SUMMARY_API_KEY")
+headers = {"Authorization": f"Bearer {API_KEY}"}
 
 def split_text_into_chunks(text, max_chunk_size=3000):
     text = text.replace('\n', ' ').strip()
@@ -16,10 +21,28 @@ def split_text_into_chunks(text, max_chunk_size=3000):
         chunks.append(text)
     return chunks
 
+def call_summarizer_api(text, min_len=40, max_len=150):
+    payload = {
+        "inputs": text,
+        "parameters": {
+            "min_length": min_len,
+            "max_length": max_len,
+            "do_sample": False
+        }
+    }
+    response = requests.post(API_URL, headers=headers, json=payload)
+    return response.json()
+
 def generate_summary(text, min_len=40, max_len=150):
     chunks = split_text_into_chunks(text)
     final_summary = ""
+
     for chunk in chunks:
-        summary = summarizer(chunk, max_length=max_len, min_length=min_len, do_sample=False)[0]['summary_text']
-        final_summary += summary.strip() + " "
+        response = call_summarizer_api(chunk, min_len, max_len)
+        try:
+            summary = response[0]['summary_text']
+            final_summary += summary.strip() + " "
+        except:
+            final_summary += "[Summary Failed] "
+
     return final_summary.strip()

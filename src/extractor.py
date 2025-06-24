@@ -1,10 +1,26 @@
 from PyPDF2 import PdfReader
 import docx2txt
-import pytesseract
 from PIL import Image
 from pathlib import Path
+import requests
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+def extract_text_from_image(path):
+    api_key = 'K82535128888957'  # Free OCR.Space
+    ocr_url = 'https://api.ocr.space/parse/image'
+
+    with open(path, 'rb') as f:
+        response = requests.post(
+            ocr_url,
+            files={'filename': f},
+            data={'apikey': api_key, 'language': 'eng'}
+        )
+
+    result = response.json()
+
+    try:
+        return result['ParsedResults'][0]['ParsedText']
+    except:
+        return "Could not extract text from image."
 
 def extract_text(path):
     file_ext = Path(path).suffix.lower()
@@ -21,7 +37,6 @@ def extract_text(path):
             return f.read()
 
     elif file_ext in ['.jpg', '.jpeg', '.png']:
-        img = Image.open(path)
-        return pytesseract.image_to_string(img)
+        return extract_text_from_image(path)
 
     return ""
