@@ -3,19 +3,10 @@ import docx2txt
 from pathlib import Path
 from PIL import Image
 import requests
-import os
-import streamlit as st
+from src.load_secrets import load_secret
 
-# Try loading from .env (local) or Streamlit secrets (cloud)
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except:
-    pass
-
-# Universal loader: Cloud secrets first, fallback to local .env
-OCR_API_KEY = st.secrets.get("OCR_API_KEY", os.getenv("OCR_API_KEY"))
-OCR_API_URL = st.secrets.get("OCR_API_URL", os.getenv("OCR_API_URL"))
+OCR_API_KEY = load_secret("OCR_API_KEY")
+OCR_API_URL = load_secret("OCR_API_URL")
 
 def extract_text_from_image(path):
     if not OCR_API_KEY or not OCR_API_URL:
