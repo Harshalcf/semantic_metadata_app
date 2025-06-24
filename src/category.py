@@ -1,9 +1,18 @@
+import os
 import requests
+import streamlit as st
 from collections import Counter
-from src.load_secrets import load_secret
 
-API_URL = load_secret("CLASSIFY_API_URL")
-API_KEY = load_secret("CLASSIFY_API_KEY")
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
+
+# Universal loader: Cloud first, fallback to local
+API_URL = st.secrets.get("CLASSIFY_API_URL", os.getenv("CLASSIFY_API_URL"))
+API_KEY = st.secrets.get("CLASSIFY_API_KEY", os.getenv("CLASSIFY_API_KEY"))
 
 headers = {"Authorization": f"Bearer {API_KEY}"}
 

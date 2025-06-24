@@ -1,8 +1,17 @@
+import os
 import requests
-from src.load_secrets import load_secret
+import streamlit as st
 
-API_URL = load_secret("SUMMARY_API_URL")
-API_KEY = load_secret("SUMMARY_API_KEY")
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
+
+# Universal loader: Cloud first, then local
+API_URL = st.secrets.get("SUMMARY_API_URL", os.getenv("SUMMARY_API_URL"))
+API_KEY = st.secrets.get("SUMMARY_API_KEY", os.getenv("SUMMARY_API_KEY"))
 
 headers = {"Authorization": f"Bearer {API_KEY}"}
 

@@ -1,9 +1,18 @@
 import re
+import os
 import requests
-from src.load_secrets import load_secret
+import streamlit as st
 
-NER_API_URL = load_secret("NER_API_URL")
-NER_API_KEY = load_secret("NER_API_KEY")
+# Load secrets with universal loader
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
+
+# Universal environment loader: Cloud first, then local
+NER_API_URL = st.secrets.get("NER_API_URL", os.getenv("NER_API_URL"))
+NER_API_KEY = st.secrets.get("NER_API_KEY", os.getenv("NER_API_KEY"))
 
 headers = {"Authorization": f"Bearer {NER_API_KEY}"}
 
@@ -33,6 +42,7 @@ def extract_author(text):
 
     try:
         for ent in results[0]['entities']:
+            # Hugging Face API may return 'entity_group' or 'entity'
             if ent.get("entity_group", ent.get("entity")) == "PER":
                 return ent.get("word")
     except:
