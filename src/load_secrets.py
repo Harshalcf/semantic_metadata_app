@@ -9,4 +9,4 @@ except:
 
 def load_secret(key):
     """Fetch secret from Streamlit Cloud or local .env"""
-    return os.getenv(key)
+    return st.secrets.get(key)
