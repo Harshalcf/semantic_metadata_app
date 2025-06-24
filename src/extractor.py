@@ -1,26 +1,37 @@
 from PyPDF2 import PdfReader
 import docx2txt
-from PIL import Image
 from pathlib import Path
+from PIL import Image
 import requests
+import os
+
+# Try loading from .env or Streamlit Secrets
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
+
+OCR_API_KEY = os.getenv("OCR_API_KEY")
+OCR_API_URL = os.getenv("OCR_API_URL")
 
 def extract_text_from_image(path):
-    api_key = 'K82535128888957'  # Free OCR.Space
-    ocr_url = 'https://api.ocr.space/parse/image'
+    if not OCR_API_KEY or not OCR_API_URL:
+        return "OCR API key or URL not set."
 
     with open(path, 'rb') as f:
         response = requests.post(
-            ocr_url,
+            OCR_API_URL,
             files={'filename': f},
-            data={'apikey': api_key, 'language': 'eng'}
+            data={'apikey': OCR_API_KEY, 'language': 'eng'}
         )
 
-    result = response.json()
-
     try:
+        result = response.json()
         return result['ParsedResults'][0]['ParsedText']
-    except:
-        return "Could not extract text from image."
+    except Exception as e:
+        return f"OCR Error: {str(e)}"
+
 
 def extract_text(path):
     file_ext = Path(path).suffix.lower()
@@ -39,4 +50,4 @@ def extract_text(path):
     elif file_ext in ['.jpg', '.jpeg', '.png']:
         return extract_text_from_image(path)
 
-    return ""
+    return "Unsupported file format."
