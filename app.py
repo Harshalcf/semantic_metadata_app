@@ -1,20 +1,9 @@
 import streamlit as st
 import os
 import json
-from transformers import pipeline
-
-# ===== Hugging Face pipelines =====
-@st.cache_resource
-def load_summarizer():
-    return pipeline("summarization", model="facebook/bart-large-cnn")
-
-@st.cache_resource
-def load_classifier():
-    return pipeline("zero-shot-classification", model="facebook/bart-large-mnli")
-
-@st.cache_resource
-def load_ner():
-    return pipeline("ner", grouped_entities=True)
+from io import BytesIO
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
 
 # ===== Import functions from your modules =====
 from src.extractor import extract_text
@@ -27,6 +16,25 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # ===== Streamlit App Layout =====
 st.set_page_config(page_title="Metadata Generator", layout="centered")
 st.title("Semantic Metadata Generator")
+
+# ===== PDF Generation Function =====
+def generate_pdf(metadata):
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer, pagesize=letter)
+    width, height = letter
+    text_object = c.beginText(40, height - 50)
+
+    text_object.setFont("Helvetica", 12)
+
+    for key, value in metadata.items():
+        text_object.textLine(f"{key}: {value}")
+        text_object.textLine("")  # Add space between entries
+
+    c.drawText(text_object)
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+    return buffer
 
 # ===== File Upload Section =====
 uploaded_file = st.file_uploader("Upload your document", type=["pdf", "docx", "txt", "jpg", "jpeg", "png"])
@@ -42,7 +50,6 @@ if uploaded_file:
     st.success(f"File saved at: `{save_path}`")
 
     # Extract text
-    @st.cache_data
     def get_text(path):
         return extract_text(path)
 
@@ -50,7 +57,6 @@ if uploaded_file:
         text = get_text(save_path)
 
     # Generate metadata
-    @st.cache_data
     def get_metadata(t):
         return generate_metadata(t)
 
@@ -62,7 +68,7 @@ if uploaded_file:
     formatted_json = json.dumps(metadata, indent=4)
     st.code(formatted_json, language="json")  # Pretty format
 
-    # Show download button
+    # Show download button for JSON
     st.download_button(
         label="Download Metadata as JSON",
         data=formatted_json,
@@ -70,7 +76,15 @@ if uploaded_file:
         mime="application/json"
     )
 
+    # Show download button for PDF
+    pdf_file = generate_pdf(metadata)
+    st.download_button(
+        label="Download Metadata as PDF",
+        data=pdf_file,
+        file_name="metadata.pdf",
+        mime="application/pdf"
+    )
+
     # Clear & Upload another file button
     if st.button("Clear & Upload Another File"):
-        st.cache_data.clear()
         st.rerun()

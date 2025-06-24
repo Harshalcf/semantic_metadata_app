@@ -11,3 +11,5 @@ Pillow
 datefinder
 pdfminer.six
 transformers
+reportlab
+opencv-python
