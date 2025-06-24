@@ -1,13 +1,18 @@
 import os
 import requests
-from dotenv import load_dotenv
+import streamlit as st
 from collections import Counter
 
 # Load environment variables
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
 
-API_URL = os.getenv("CLASSIFY_API_URL")
-API_KEY = os.getenv("CLASSIFY_API_KEY")
+# Universal loader: Cloud first, fallback to local
+API_URL = st.secrets.get("CLASSIFY_API_URL", os.getenv("CLASSIFY_API_URL"))
+API_KEY = st.secrets.get("CLASSIFY_API_KEY", os.getenv("CLASSIFY_API_KEY"))
 
 headers = {"Authorization": f"Bearer {API_KEY}"}
 
@@ -31,8 +36,7 @@ def detect_category_from_chunks(text, candidate_labels=None, max_chunk_size=1000
     for chunk in chunks:
         result = query_zero_shot(chunk, candidate_labels)
 
-        # Safely get highest label and score
-        if "labels" in result and "scores" in result:
+        if isinstance(result, dict) and "labels" in result and "scores" in result:
             scores[result['labels'][0]] += result['scores'][0]
 
     best_category = scores.most_common(1)[0][0] if scores else "Unknown"

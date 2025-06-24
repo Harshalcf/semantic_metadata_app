@@ -1,11 +1,18 @@
 import os
 import requests
-from dotenv import load_dotenv
+import streamlit as st
 
-load_dotenv()
+# Load environment variables
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except:
+    pass
 
-API_URL = os.getenv("SUMMARY_API_URL")
-API_KEY = os.getenv("SUMMARY_API_KEY")
+# Universal loader: Cloud first, then local
+API_URL = st.secrets.get("SUMMARY_API_URL", os.getenv("SUMMARY_API_URL"))
+API_KEY = st.secrets.get("SUMMARY_API_KEY", os.getenv("SUMMARY_API_KEY"))
+
 headers = {"Authorization": f"Bearer {API_KEY}"}
 
 def split_text_into_chunks(text, max_chunk_size=3000):

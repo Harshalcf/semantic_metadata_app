@@ -4,16 +4,18 @@ from pathlib import Path
 from PIL import Image
 import requests
 import os
+import streamlit as st
 
-# Try loading from .env or Streamlit Secrets
+# Try loading from .env (local) or Streamlit secrets (cloud)
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except:
     pass
 
-OCR_API_KEY = os.getenv("OCR_API_KEY")
-OCR_API_URL = os.getenv("OCR_API_URL")
+# Universal loader: Cloud secrets first, fallback to local .env
+OCR_API_KEY = st.secrets.get("OCR_API_KEY", os.getenv("OCR_API_KEY"))
+OCR_API_URL = st.secrets.get("OCR_API_URL", os.getenv("OCR_API_URL"))
 
 def extract_text_from_image(path):
     if not OCR_API_KEY or not OCR_API_URL:
@@ -31,7 +33,6 @@ def extract_text_from_image(path):
         return result['ParsedResults'][0]['ParsedText']
     except Exception as e:
         return f"OCR Error: {str(e)}"
-
 
 def extract_text(path):
     file_ext = Path(path).suffix.lower()
