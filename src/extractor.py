@@ -4,6 +4,8 @@ import pytesseract
 from PIL import Image
 from pathlib import Path
 
+pytesseract.pytesseract.tesseract_cmd = r'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
 def extract_text(path):
     file_ext = Path(path).suffix.lower()
 
