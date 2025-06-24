@@ -47,3 +47,34 @@ conda activate meta-gen
 
 ## Install requirements
 pip install -r requirements.txt
+
+# What We Learned
+Using API-based NLP processing significantly reduces load on local and cloud resources, making the app faster and lighter.
+
+Streamlit's secrets.toml and .env need careful setup for smooth cloud deployment.
+
+Large files and complex models can overload local devices — APIs offer a scalable solution.
+
+pytesseract is not cloud-friendly without manual server setup — using online OCR services like ocr.space is a better option for cross-platform deployment.
+
+Modularizing the app into extractor.py, summary.py, category.py, and author_title.py files improves maintainability and scalability.
+
+# Mistakes and Challenges
+Initially tried to deploy heavy local models like spacy and transformers directly on the cloud which led to severe performance issues and deployment errors.
+
+Faced multiple dependency conflicts and version mismatches (tokenizers, transformers).
+
+pytesseract was not supported on Streamlit Cloud, which forced a shift to API-based OCR.
+
+Encountered API timeout and rate-limiting issues due to using free API keys without proper optimization.
+
+# Real-World Usage
+This app is production-ready for small to medium-scale deployments such as:
+
+Automating metadata generation for research papers, contracts, or corporate documents.
+
+Scanning physical documents using OCR to digitize and extract metadata.
+
+Educational tools that summarize and categorize large reading materials.
+
+Backend services for document management systems that require automatic tagging and metadata enrichment.
